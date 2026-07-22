@@ -30,7 +30,8 @@ withBtn.onclick = () => {
 };
 
 function money(value) {
-  return Math.round(value).toLocaleString('ru-RU') + ' ₽';
+  const rounded = Math.ceil(value / 10) * 10;
+  return rounded.toLocaleString('ru-RU') + ' ₽';
 }
 
 function formatInput() {
@@ -51,10 +52,16 @@ function calculate(){
   const price = Number(priceInput.value.replace(/\D/g, '')) || 0;
   const months = Number(monthsSelect.value);
   const percent = firstPayment ? withFirstPayment[months] : withoutFirstPayment[months];
-  const total = price * (1 + percent/100);
-  const down = firstPayment ? total * 0.25 : 0;
-  const rest = total - down;
-  const monthly = rest / months;
+  let total = price * (1 + percent / 100);
+  let down = firstPayment ? total * 0.25 : 0;
+  let rest = total - down;
+
+  // Округляем ежемесячный платеж вверх до 10 рублей
+  const monthly = Math.ceil((rest / months) / 10) * 10;
+
+  // Пересчитываем остаток и общую стоимость, чтобы все суммы совпадали
+  rest = monthly * months;
+  total = firstPayment ? rest + down : rest;
 
   document.getElementById('percent').textContent = percent + '%';
   document.getElementById('total').textContent = money(total);
