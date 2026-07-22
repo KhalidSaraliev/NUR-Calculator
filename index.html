@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>NUR Invest</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+</head>
+
+<body>
+
+    <div class="container">
+    
+        <div class="card">
+
+            <h1 class="brand-title">NUR Invest</h1>
+
+            <p class="subtitle">
+                Рассчитайте стоимость рассрочки за несколько секунд
+            </p>
+    
+            <div class="input-group">
+    
+                <label>
+                    Стоимость товара
+                </label>
+    
+                <input
+                    type="text"
+                    id="price"
+                    inputmode="numeric"
+                    autocomplete="off"
+                    placeholder="Например: 100 000">
+    
+            </div>
+    
+            <div class="input-group">
+    
+                <label>
+                    Срок рассрочки
+                </label>
+    
+                <select id="months">
+    
+                    <option value="3">3 месяца</option>
+                    <option value="4">4 месяца</option>
+                    <option value="5">5 месяцев</option>
+                    <option value="6">6 месяцев</option>
+                    <option value="7">7 месяцев</option>
+                    <option value="8">8 месяцев</option>
+                    <option value="9">9 месяцев</option>
+                    <option value="10">10 месяцев</option>
+                    <option value="11">11 месяцев</option>
+                    <option value="12">12 месяцев</option>
+    
+                </select>
+    
+            </div>
+    
+            <div class="switches">
+    
+                <button id="withoutBtn" class="switch active">
+                    Без первого взноса
+                </button>
+                
+                <button id="withBtn" class="switch">
+                    Первый взнос 25%
+                </button>
+    
+            </div>
+
+            <div class="result">
+                <div class="payment-card">
+                    <div class="payment-title">
+                        Ежемесячный платеж
+                    </div>
+                
+                    <div id="paymentBig" class="payment-value">
+                        0 ₽
+                    </div>
+                </div>
+
+                <div class="result-row">
+                    <span>Наценка</span>
+                    <strong id="percent">16%</strong>
+                </div>
+            
+                <div class="result-row">
+                    <span>Стоимость в рассрочку</span>
+                    <strong id="total">0 ₽</strong>
+                </div>
+            
+                <div class="result-row">
+                    <span>Первый взнос</span>
+                    <strong id="down">0 ₽</strong>
+                </div>
+            
+                <div class="result-row">
+                    <span>Остаток</span>
+                    <strong id="rest">0 ₽</strong>
+                </div>
+
+            
+            </div>
+
+            <div class="actions">
+                <button class="primary-btn" id="shareBtn">
+                    <span class="btn-title">Поделиться расчётом</span>
+                    <span class="btn-subtitle">Отправьте или скопируйте расчёт</span>
+                </button>
+
+                <button class="whatsapp-btn" id="whatsappBtn">
+                    <span class="btn-title">Отправить в WhatsApp</span>
+                    <span class="btn-subtitle">Отправить расчёт клиенту</span>
+                </button>
+            </div>
+    
+        </div>
+    
+    </div>
+    
+    <script src="js/script.js"></script>
+    
+    </body>
+
+</html>
