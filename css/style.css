@@ -16,11 +16,11 @@ body{
     overflow:visible;
     padding:40px 20px;
 }
-
+ 
 /* ===== Desktop layout: flex row, sidebar is a normal flow item
    (fixes the old absolute-positioning bug where a taller sidebar
    could overflow/misalign because it didn't affect the parent height) ===== */
-
+ 
 .layout{
     display:flex;
     align-items:flex-start;
@@ -30,7 +30,7 @@ body{
     max-width:1260px;
     margin:0 auto;
 }
-
+ 
 .card{
     width:430px;
     flex-shrink:0;
@@ -51,7 +51,7 @@ body{
     background:radial-gradient(circle at top left, rgba(59,130,246,.12), transparent 40%);
     pointer-events:none;
 }
-
+ 
 .info-sidebar{
     position:relative;
     width:360px;
@@ -65,7 +65,7 @@ body{
     color:#fff;
     overflow:hidden;
 }
-
+ 
 .info-sidebar::before{
     content:"";
     position:absolute;
@@ -73,29 +73,29 @@ body{
     background:radial-gradient(circle at top right, rgba(34,197,94,.18), transparent 45%);
     pointer-events:none;
 }
-
+ 
 .info-sidebar h2{
     font-size:26px;
     font-weight:700;
     line-height:1.35;
     margin-bottom:20px;
 }
-
+ 
 .info-sidebar p{
     color:#d1d5db;
     line-height:1.7;
     margin-bottom:14px;
 }
-
+ 
 .info-sidebar ul{
     margin-top:18px;
     padding-left:20px;
 }
-
+ 
 .info-sidebar li{
     margin-bottom:12px;
 }
-
+ 
 .info-sidebar .example-box{
     margin:22px 0;
     padding:20px;
@@ -103,20 +103,20 @@ body{
     background:linear-gradient(135deg,rgba(34,197,94,.16),rgba(34,197,94,.08));
     border:1px solid rgba(34,197,94,.28);
 }
-
+ 
 .example-box h3{
     margin-bottom:12px;
     color:#4ade80;
 }
-
+ 
 .example-box p{
     margin-bottom:10px;
 }
-
+ 
 .info-sidebar li::marker{
     color:#22c55e;
 }
-
+ 
 @media (max-width:1320px){
     .layout{
         flex-direction:column;
@@ -124,23 +124,23 @@ body{
         width:100%;
         max-width:430px;
     }
-
+ 
     .card,
     .info-sidebar,
     .ads-sidebar{
         width:100%;
     }
-
+ 
     /* На мобильном калькулятор — на первом месте, товары и инфо-блок ниже */
     .card{
         order:1;
     }
-
+ 
     .ads-sidebar{
         order:2;
         margin-top:24px;
     }
-
+ 
     .info-sidebar{
         order:3;
         margin-top:24px;
@@ -155,6 +155,10 @@ input.field-invalid{border-color:#ef4444;animation:shake .3s ease;}
     margin-top:8px;
     color:#f87171;
     font-size:13px;
+}
+ 
+.field-error[hidden]{
+    display:none;
 }
 .field-hint{
     display:block;
@@ -180,17 +184,17 @@ select:focus-visible,
     border-radius:20px;
     padding:20px;
 }
-
+ 
 .contact-block{
     margin-top:18px;
     text-align:center;
 }
-
+ 
 .contact-block p{
     color:#94a3b8;
     margin-bottom:8px;
 }
-
+ 
 .contact-block a{
     display:inline-block;
     text-decoration:none;
@@ -199,7 +203,7 @@ select:focus-visible,
     font-weight:700;
     transition:.25s;
 }
-
+ 
 .contact-block a:hover{
     color:#4ade80;
     transform:scale(1.03);
@@ -214,7 +218,7 @@ select:focus-visible,
     transform:translateY(0);
     transition:.3s;
 }
-
+ 
 .payment-card:hover{
     transform:translateY(-3px);
 }
@@ -224,12 +228,12 @@ select:focus-visible,
     padding-left:8px;
     padding-right:8px;
 }
-
+ 
 .schedule-toggle{
     margin-top:14px;
     text-align:center;
 }
-
+ 
 .schedule-btn{
     background:none;
     border:1px dashed rgba(255,255,255,.25);
@@ -240,12 +244,12 @@ select:focus-visible,
     font-size:14px;
     transition:.2s;
 }
-
+ 
 .schedule-btn:hover{
     background:rgba(255,255,255,.06);
     border-color:rgba(255,255,255,.4);
 }
-
+ 
 .schedule-wrap{
     margin-top:14px;
     background:#111827;
@@ -254,18 +258,18 @@ select:focus-visible,
     padding:8px;
     animation:fadeIn .3s ease;
 }
-
+ 
 .schedule-scroll{
     max-height:260px;
     overflow-y:auto;
 }
-
+ 
 .schedule-table{
     width:100%;
     border-collapse:collapse;
     font-size:14px;
 }
-
+ 
 .schedule-table thead th{
     position:sticky;
     top:0;
@@ -276,39 +280,39 @@ select:focus-visible,
     padding:10px 12px;
     border-bottom:1px solid rgba(255,255,255,.1);
 }
-
+ 
 .schedule-table td{
     padding:10px 12px;
     border-bottom:1px solid rgba(255,255,255,.06);
     color:#e2e8f0;
 }
-
+ 
 .schedule-table tr:last-child td{
     border-bottom:none;
 }
-
+ 
 .schedule-table td:last-child,
 .schedule-table th:last-child{
     text-align:right;
     font-weight:700;
     color:#4ade80;
 }
-
+ 
 .schedule-table tr.schedule-down td{
     color:#93c5fd;
 }
-
+ 
 .schedule-table tr.schedule-down td:last-child{
     color:#93c5fd;
 }
-
+ 
 .actions{
     display:flex;
     flex-direction:column;
     gap:14px;
     margin-top:22px;
 }
-
+ 
 .primary-btn,
 .whatsapp-btn{
     width:100%;
@@ -324,11 +328,11 @@ select:focus-visible,
     color:#fff;
     box-shadow:0 10px 25px rgba(0,0,0,.25);
 }
-
+ 
 .primary-btn{
     background:linear-gradient(135deg,#2563eb,#1d4ed8);
 }
-
+ 
 .whatsapp-btn{
     background:linear-gradient(135deg,#22c55e,#16a34a);
     letter-spacing:.2px;
@@ -337,20 +341,20 @@ select:focus-visible,
     justify-content:space-between;
     text-align:left;
 }
-
+ 
 .primary-btn:hover,
 .whatsapp-btn:hover{
     transform:translateY(-3px);
     box-shadow:0 16px 32px rgba(0,0,0,.35);
 }
-
+ 
 .primary-btn:disabled,
 .whatsapp-btn:disabled{
     opacity:.6;
     cursor:not-allowed;
     transform:none;
 }
-
+ 
 /* ===== PDF receipt (rendered off-screen, captured with html2canvas) ===== */
 .pdf-receipt{
     position:fixed;
@@ -363,7 +367,7 @@ select:focus-visible,
     padding:40px;
     box-sizing:border-box;
 }
-
+ 
 .pdf-header{
     display:flex;
     align-items:center;
@@ -372,7 +376,7 @@ select:focus-visible,
     padding-bottom:20px;
     border-bottom:2px solid #10b981;
 }
-
+ 
 .pdf-logo-badge{
     width:56px;
     height:56px;
@@ -386,65 +390,65 @@ select:focus-visible,
     background:linear-gradient(135deg,#22c55e,#16a34a);
     flex-shrink:0;
 }
-
+ 
 .pdf-brand-title{
     font-size:26px;
     font-weight:700;
     color:#0f172a;
 }
-
+ 
 .pdf-brand-tagline{
     font-size:13px;
     color:#6b7280;
     margin-top:2px;
 }
-
+ 
 .pdf-meta{
     font-size:13px;
     color:#6b7280;
     margin-bottom:16px;
 }
-
+ 
 .pdf-summary{
     width:100%;
     border-collapse:collapse;
     margin-bottom:28px;
 }
-
+ 
 .pdf-summary td{
     padding:10px 4px;
     border-bottom:1px solid #e5e7eb;
     font-size:15px;
     color:#111827;
 }
-
+ 
 .pdf-summary td:first-child{
     color:#6b7280;
 }
-
+ 
 .pdf-summary td:last-child{
     text-align:right;
     font-weight:700;
 }
-
+ 
 .pdf-summary tr.pdf-highlight td{
     font-size:19px;
     color:#059669;
 }
-
+ 
 .pdf-schedule-title{
     font-size:17px;
     font-weight:700;
     margin-bottom:12px;
     color:#0f172a;
 }
-
+ 
 .pdf-schedule{
     width:100%;
     border-collapse:collapse;
     margin-bottom:28px;
 }
-
+ 
 .pdf-schedule th{
     text-align:left;
     font-size:13px;
@@ -452,74 +456,74 @@ select:focus-visible,
     padding:8px 4px;
     border-bottom:2px solid #e5e7eb;
 }
-
+ 
 .pdf-schedule td{
     padding:8px 4px;
     font-size:14px;
     border-bottom:1px solid #f1f5f9;
     color:#111827;
 }
-
+ 
 .pdf-schedule td:last-child,
 .pdf-schedule th:last-child{
     text-align:right;
     font-weight:700;
 }
-
+ 
 .pdf-schedule tr.pdf-row-down td{
     color:#2563eb;
 }
-
+ 
 .pdf-footer{
     border-top:1px solid #e5e7eb;
     padding-top:16px;
 }
-
+ 
 .pdf-phone{
     font-weight:700;
     color:#111827;
     margin-bottom:8px;
 }
-
+ 
 .pdf-disclaimer{
     font-size:11px;
     color:#9ca3af;
     line-height:1.5;
 }
-
+ 
 .btn-title{
     font-size:19px;
     font-weight:700;
     margin-bottom:4px;
 }
-
+ 
 .btn-subtitle{
     font-size:13px;
     color:rgba(255,255,255,.85);
 }
-
+ 
 .btn-icon{
     font-size:28px;
     flex-shrink:0;
 }
-
+ 
 .btn-content{
     display:flex;
     flex-direction:column;
     flex:1;
     margin:0 16px;
 }
-
+ 
 .btn-content .btn-title{
     margin-bottom:4px;
 }
-
+ 
 .btn-arrow{
     font-size:24px;
     font-weight:700;
     transition:transform .25s ease;
 }
-
+ 
 .whatsapp-btn:hover .btn-arrow{
     transform:translateX(6px);
 }
@@ -529,7 +533,7 @@ select:focus-visible,
     25%{transform:translateX(-6px);}
     75%{transform:translateX(6px);}
 }
-
+ 
 /* ===== Brand ===== */
 .brand{
     display:flex;
@@ -538,7 +542,7 @@ select:focus-visible,
     gap:16px;
     margin-bottom:16px;
 }
-
+ 
 .brand-logo{
     width:60px;
     height:60px;
@@ -552,25 +556,25 @@ select:focus-visible,
     background:linear-gradient(135deg,#22c55e,#16a34a);
     box-shadow:0 10px 30px rgba(34,197,94,.35);
 }
-
+ 
 .brand-text{
     display:flex;
     flex-direction:column;
 }
-
+ 
 .brand-title{
     margin:0;
     text-align:left;
     font-size:32px;
     line-height:1.1;
 }
-
+ 
 .brand-tagline{
     margin-top:4px;
     font-size:13px;
     color:#94a3b8;
 }
-
+ 
 /* ===== Top badges ===== */
 .top-badges{
     display:flex;
@@ -579,7 +583,7 @@ select:focus-visible,
     gap:10px;
     margin:0 0 24px;
 }
-
+ 
 .top-badges span{
     padding:8px 14px;
     border-radius:999px;
@@ -589,13 +593,13 @@ select:focus-visible,
     font-size:13px;
     font-weight:600;
 }
-
+ 
 /* ===== Ads sidebar (left column): рекламный щит-постер ===== */
 .ads-sidebar{
     width:340px;
     flex-shrink:0;
 }
-
+ 
 .ads-poster{
     display:block;
     width:100%;
