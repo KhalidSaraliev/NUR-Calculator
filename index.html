@@ -7,7 +7,9 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>NUR Invest</title>
+    <meta name="description" content="NUR Invest — исламская рассрочка без процентов. Рассчитайте ежемесячный платёж и стоимость товара за несколько секунд.">
+
+    <title>NUR Invest — исламская рассрочка без процентов</title>
 
     <link rel="stylesheet" href="css/style.css">
 
@@ -18,6 +20,13 @@
     <div class="container">
     <div class="page-center">
         <div class="layout">
+            <aside class="ads-sidebar">
+                <img
+                    src="img/samsung-galaxy-s24-ultra.png"
+                    alt="Samsung Galaxy S24 Ultra в рассрочку"
+                    class="ads-poster">
+            </aside>
+
             <div class="card">
 
                 <div class="brand">
@@ -31,108 +40,150 @@
                 <p class="subtitle">
                     Рассчитайте ежемесячный платеж и стоимость товара в рассрочку всего за несколько секунд.
                 </p>
-        
+
                 <div class="top-badges">
                     <span>✓ Без процентов</span>
                     <span>✓ По нормам шариата</span>
                     <span>✓ Ответ за 5 минут</span>
                 </div>
 
-                <div class="input-group">
-        
-                    <label>
-                        Стоимость товара
-                    </label>
-        
-                    <input
-                        type="text"
-                        id="price"
-                        inputmode="numeric"
-                        autocomplete="off"
-                        placeholder="Например: 100 000">
-        
-                </div>
-        
-                <div class="input-group">
-        
-                    <label>
-                        Срок рассрочки
-                    </label>
-        
-                    <select id="months">
-        
-                        <option value="3">3 месяца</option>
-                        <option value="4">4 месяца</option>
-                        <option value="5">5 месяцев</option>
-                        <option value="6">6 месяцев</option>
-                        <option value="7">7 месяцев</option>
-                        <option value="8">8 месяцев</option>
-                        <option value="9">9 месяцев</option>
-                        <option value="10">10 месяцев</option>
-                        <option value="11">11 месяцев</option>
-                        <option value="12">12 месяцев</option>
-        
-                    </select>
-        
-                </div>
-        
-                <div class="switches">
-        
-                    <button id="withoutBtn" class="switch active">
-                        Без первого взноса
-                    </button>
-                    
-                    <button id="withBtn" class="switch">
-                        Первый взнос 25%
-                    </button>
-        
-                </div>
+                <form id="calcForm" novalidate>
 
-                <div class="result">
-                    <div class="payment-card">
-                        <div class="payment-title">
-                            Ежемесячный платеж
+                    <div class="input-group">
+
+                        <label for="price">
+                            Стоимость товара
+                        </label>
+
+                        <input
+                            type="text"
+                            id="price"
+                            name="price"
+                            inputmode="numeric"
+                            autocomplete="off"
+                            maxlength="12"
+                            aria-describedby="priceError"
+                            placeholder="Например: 100 000">
+
+                        <span id="priceError" class="field-error" role="alert" hidden>
+                            Укажите стоимость товара
+                        </span>
+
+                    </div>
+
+                    <div class="input-group">
+
+                        <label for="months">
+                            Срок рассрочки
+                        </label>
+
+                        <select id="months" name="months">
+
+                            <option value="3">3 месяца</option>
+                            <option value="4">4 месяца</option>
+                            <option value="5">5 месяцев</option>
+                            <option value="6">6 месяцев</option>
+                            <option value="7">7 месяцев</option>
+                            <option value="8">8 месяцев</option>
+                            <option value="9">9 месяцев</option>
+                            <option value="10">10 месяцев</option>
+                            <option value="11">11 месяцев</option>
+                            <option value="12">12 месяцев</option>
+
+                        </select>
+
+                        <span class="field-hint">Наценка зависит от срока и наличия первого взноса</span>
+
+                    </div>
+
+                    <div class="switches" role="group" aria-label="Способ оплаты">
+
+                        <button type="button" id="withoutBtn" class="switch active" aria-pressed="true">
+                            Без первого взноса
+                        </button>
+
+                        <button type="button" id="withBtn" class="switch" aria-pressed="false">
+                            Первый взнос 25%
+                        </button>
+
+                    </div>
+
+                    <div class="result" aria-live="polite">
+                        <div class="payment-card">
+                            <div class="payment-title">
+                                Ежемесячный платеж
+                            </div>
+
+                            <div id="paymentBig" class="payment-value">
+                                0 ₽
+                            </div>
                         </div>
-                    
-                        <div id="paymentBig" class="payment-value">
-                            0 ₽
+
+                        <div class="result-row">
+                            <span>Наценка</span>
+                            <strong id="percent">16%</strong>
+                        </div>
+
+                        <div class="result-row">
+                            <span>Стоимость в рассрочку</span>
+                            <strong id="total">0 ₽</strong>
+                        </div>
+
+                        <div class="result-row">
+                            <span>Первый взнос</span>
+                            <strong id="down">0 ₽</strong>
+                        </div>
+
+                        <div class="result-row">
+                            <span>Остаток</span>
+                            <strong id="rest">0 ₽</strong>
                         </div>
                     </div>
 
-                    <div class="result-row">
-                        <span>Наценка</span>
-                        <strong id="percent">16%</strong>
+                    <div class="schedule-toggle">
+                        <button type="button" id="scheduleToggleBtn" class="schedule-btn" aria-expanded="false" aria-controls="scheduleWrap">
+                            📅 Показать график платежей
+                        </button>
                     </div>
-                
-                    <div class="result-row">
-                        <span>Стоимость в рассрочку</span>
-                        <strong id="total">0 ₽</strong>
-                    </div>
-                
-                    <div class="result-row">
-                        <span>Первый взнос</span>
-                        <strong id="down">0 ₽</strong>
-                    </div>
-                
-                    <div class="result-row">
-                        <span>Остаток</span>
-                        <strong id="rest">0 ₽</strong>
-                    </div>
-                </div>
 
+                    <div id="scheduleWrap" class="schedule-wrap" hidden>
+                        <div class="schedule-scroll">
+                            <table class="schedule-table">
+                                <thead>
+                                    <tr>
+                                        <th>№</th>
+                                        <th>Дата</th>
+                                        <th>Сумма</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="scheduleBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
 
-                <div class="actions">
-                    <button class="whatsapp-btn" id="whatsappBtn">
-                        <span class="btn-title">🟢 Оформить рассрочку</span>
-                        <span class="btn-subtitle">Отправить заявку в WhatsApp</span>
-                    </button>
-                </div>
+                    <div class="actions">
+                        <button type="submit" class="whatsapp-btn" id="whatsappBtn">
+                            <span class="btn-title">🟢 Оформить рассрочку</span>
+                            <span class="btn-subtitle">Отправить заявку в WhatsApp</span>
+                        </button>
+
+                        <button type="button" class="primary-btn" id="pdfBtn">
+                            <span class="btn-title">📄 Скачать расчёт (PDF)</span>
+                            <span class="btn-subtitle">Сохранить график платежей себе</span>
+                        </button>
+
+                        <span id="pdfError" class="field-error" role="alert" hidden>
+                            Не удалось сформировать PDF. Проверьте подключение к интернету и попробуйте ещё раз.
+                        </span>
+                    </div>
+
+                </form>
 
                 <div class="contact-block">
                     <p>Есть вопросы?</p>
                     <a href="tel:+79289999810">📞 +7 (928) 999-98-10</a>
                 </div>
-        
+
             </div>
 
             <aside class="info-sidebar">
@@ -162,9 +213,9 @@
     </div>
 
 </div>
-    
-    <script src="js/script.js"></script>
-    
+
+    <script src="js/script.js" defer></script>
+
     </body>
 
 </html>
