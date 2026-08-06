@@ -1,0 +1,303 @@
+// NUR Chat — схема базы данных (PostgreSQL + Prisma)
+// Этап 1: Компании, отделы, пользователи, авторизация, чаты, группы, сообщения, файлы
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ==================== ENUMS ====================
+
+enum UserRole {
+  OWNER            // Владелец компании
+  ADMIN            // Администратор
+  DEPARTMENT_HEAD  // Руководитель отдела
+  EMPLOYEE         // Сотрудник
+}
+
+enum WorkStatus {
+  AT_WORK
+  ON_VACATION
+  BUSY
+  DO_NOT_DISTURB
+}
+
+enum ChatType {
+  DIRECT   // личный чат 1 на 1
+  GROUP    // рабочая группа
+  CHANNEL  // канал компании (пишут только админы)
+}
+
+enum ChatMemberRole {
+  OWNER
+  ADMIN
+  MEMBER
+}
+
+enum MessageType {
+  TEXT
+  IMAGE
+  VIDEO
+  VOICE
+  FILE
+  SYSTEM
+}
+
+enum FileCategory {
+  IMAGE
+  VIDEO
+  VOICE
+  DOCUMENT
+  ARCHIVE
+  OTHER
+}
+
+enum NotificationType {
+  NEW_MESSAGE
+  MENTION
+  ADDED_TO_GROUP
+  REMOVED_FROM_GROUP
+  ROLE_CHANGED
+}
+
+enum DevicePlatform {
+  IOS
+  ANDROID
+  WEB
+}
+
+// ==================== КОМПАНИЯ / ОРГСТРУКТУРА ====================
+
+model Company {
+  id        String       @id @default(uuid())
+  name      String
+  logoUrl   String?
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  departments Department[]
+  users       User[]
+  chats       Chat[]
+  files       FileAsset[]
+
+  @@map("companies")
+}
+
+model Department {
+  id        String   @id @default(uuid())
+  name      String
+  companyId String
+  company   Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  users User[]
+
+  @@unique([companyId, name])
+  @@map("departments")
+}
+
+// ==================== ПОЛЬЗОВАТЕЛИ / АВТОРИЗАЦИЯ ====================
+
+model User {
+  id         String     @id @default(uuid())
+  phone      String     @unique
+  firstName  String
+  lastName   String
+  position   String?
+  avatarUrl  String?
+  role       UserRole   @default(EMPLOYEE)
+  workStatus WorkStatus @default(AT_WORK)
+  isOnline   Boolean    @default(false)
+  lastSeenAt DateTime?
+  isBlocked  Boolean    @default(false)
+
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  departmentId String?
+  department   Department? @relation(fields: [departmentId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  chatMembers   ChatMember[]
+  sentMessages  Message[]      @relation("MessageSender")
+  otpCodes      OtpCode[]
+  refreshTokens RefreshToken[]
+  uploadedFiles FileAsset[]
+  messageReads  MessageRead[]
+  notifications Notification[]
+  pushTokens    PushToken[]
+
+  @@index([companyId])
+  @@map("users")
+}
+
+model OtpCode {
+  id        String    @id @default(uuid())
+  userId    String?
+  phone     String
+  code      String
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([phone])
+  @@map("otp_codes")
+}
+
+model RefreshToken {
+  id        String    @id @default(uuid())
+  userId    String
+  tokenHash String
+  expiresAt DateTime
+  revokedAt DateTime?
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("refresh_tokens")
+}
+
+// ==================== ЧАТЫ / ГРУППЫ ====================
+
+model Chat {
+  id          String   @id @default(uuid())
+  type        ChatType
+  name        String? // для GROUP / CHANNEL
+  description String?
+  avatarUrl   String?
+
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  members  ChatMember[]
+  messages Message[]
+
+  @@index([companyId])
+  @@map("chats")
+}
+
+model ChatMember {
+  id         String         @id @default(uuid())
+  chatId     String
+  chat       Chat           @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  userId     String
+  user       User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role       ChatMemberRole @default(MEMBER)
+  joinedAt   DateTime       @default(now())
+  lastReadAt DateTime?
+  isMuted    Boolean        @default(false)
+
+  @@unique([chatId, userId])
+  @@map("chat_members")
+}
+
+model Message {
+  id       String @id @default(uuid())
+  chatId   String
+  chat     Chat   @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  senderId String
+  sender   User   @relation("MessageSender", fields: [senderId], references: [id], onDelete: Cascade)
+
+  type MessageType @default(TEXT)
+  text String?
+
+  replyToId String?
+  replyTo   Message?  @relation("MessageReplies", fields: [replyToId], references: [id], onDelete: SetNull)
+  replies   Message[] @relation("MessageReplies")
+
+  forwardedFromId String? // id исходного сообщения (для "переслать")
+
+  isEdited  Boolean @default(false)
+  isPinned  Boolean @default(false)
+  isDeleted Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  attachments FileAsset[]
+  reads       MessageRead[]
+
+  @@index([chatId, createdAt])
+  @@map("messages")
+}
+
+model MessageRead {
+  id        String   @id @default(uuid())
+  messageId String
+  message   Message  @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  readAt    DateTime @default(now())
+
+  @@unique([messageId, userId])
+  @@map("message_reads")
+}
+
+// ==================== ФАЙЛЫ / "ФАЙЛЫ КОМПАНИИ" ====================
+
+model FileAsset {
+  id String @id @default(uuid())
+
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  uploadedById String
+  uploadedBy   User   @relation(fields: [uploadedById], references: [id], onDelete: Cascade)
+
+  messageId String?
+  message   Message? @relation(fields: [messageId], references: [id], onDelete: SetNull)
+
+  category   FileCategory
+  fileName   String
+  mimeType   String
+  sizeBytes  Int
+  storageKey String // ключ/путь в S3-совместимом хранилище
+  url        String?
+
+  createdAt DateTime @default(now())
+
+  @@index([companyId])
+  @@map("file_assets")
+}
+
+// ==================== УВЕДОМЛЕНИЯ ====================
+
+model Notification {
+  id     String           @id @default(uuid())
+  userId String
+  user   User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type   NotificationType
+
+  title String
+  body  String
+  data  Json? // произвольные метаданные: chatId, messageId и т.д.
+
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([userId, isRead])
+  @@map("notifications")
+}
+
+model PushToken {
+  id       String         @id @default(uuid())
+  userId   String
+  user     User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token    String         @unique
+  platform DevicePlatform
+
+  createdAt DateTime @default(now())
+
+  @@map("push_tokens")
+}
