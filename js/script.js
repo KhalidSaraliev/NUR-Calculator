@@ -25,6 +25,14 @@
   const scheduleBody = document.getElementById('scheduleBody');
   const pdfBtn = document.getElementById('pdfBtn');
   const pdfError = document.getElementById('pdfError');
+  const downPaymentGroup = document.getElementById('downPaymentGroup');
+  const downPaymentInput = document.getElementById('downPaymentInput');
+  const downPaymentError = document.getElementById('downPaymentError');
+
+  // Пока true — поле взноса ещё не трогали руками, и оно само подстраивается
+  // под 25% от стоимости товара. Как только клиент введёт своё значение,
+  // синхронизация с ценой отключается.
+  let downTouched = false;
 
   const prefersReducedMotion = window.matchMedia &&
     window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -40,6 +48,13 @@
     withoutBtn.setAttribute('aria-pressed', 'true');
     withBtn.classList.remove('active');
     withBtn.setAttribute('aria-pressed', 'false');
+
+    if (downPaymentGroup) downPaymentGroup.hidden = true;
+    downTouched = false;
+    if (downPaymentInput) downPaymentInput.value = '';
+    if (downPaymentInput) downPaymentInput.classList.remove('field-invalid');
+    if (downPaymentError) downPaymentError.hidden = true;
+
     calculate();
   });
 
@@ -49,6 +64,11 @@
     withBtn.setAttribute('aria-pressed', 'true');
     withoutBtn.classList.remove('active');
     withoutBtn.setAttribute('aria-pressed', 'false');
+
+    // Значение поля (25% от цены) выставит сам calculate(), пока клиент
+    // его не тронет — см. блок ниже.
+    if (downPaymentGroup) downPaymentGroup.hidden = false;
+
     calculate();
   });
 
@@ -59,6 +79,11 @@
 
   function getPrice() {
     return Number(priceInput.value.replace(/\D/g, '')) || 0;
+  }
+
+  function getDownInputValue() {
+    if (!downPaymentInput) return 0;
+    return Number(downPaymentInput.value.replace(/\D/g, '')) || 0;
   }
 
   function clearPriceError() {
@@ -216,7 +241,7 @@
         <tbody>
           <tr><td>Стоимость товара</td><td>${priceFormatted}</td></tr>
           <tr><td>Срок рассрочки</td><td>${months} мес.</td></tr>
-          <tr><td>Способ оплаты</td><td>${firstPayment ? 'Первый взнос 25%' : 'Без первого взноса'}</td></tr>
+          <tr><td>Способ оплаты</td><td>${firstPayment ? 'С первым взносом' : 'Без первого взноса'}</td></tr>
           <tr><td>Наценка</td><td>${percent}</td></tr>
           <tr><td>Первый взнос</td><td>${money(down)}</td></tr>
           <tr><td>Остаток к оплате</td><td>${money(rest)}</td></tr>
@@ -348,14 +373,57 @@
   priceInput.addEventListener('input', formatInput);
   monthsSelect.addEventListener('change', calculate);
 
+  if (downPaymentInput) {
+    downPaymentInput.addEventListener('input', () => {
+      const digits = downPaymentInput.value.replace(/\D/g, '');
+      downPaymentInput.value = digits ? Number(digits).toLocaleString('ru-RU') : '';
+      downTouched = true;
+      calculate();
+    });
+
+    // На blur мягко подтягиваем значение до минимума, если клиент ввёл
+    // меньше 25% — сам расчёт и до этого момента уже использует минимум,
+    // здесь просто приводим цифры в поле в соответствие с тем, что видно
+    // в результатах.
+    downPaymentInput.addEventListener('blur', () => {
+      const minDown = getPrice() * 0.25;
+      if (getDownInputValue() < minDown) {
+        downPaymentInput.value = minDown ? Math.ceil(minDown).toLocaleString('ru-RU') : '';
+        calculate();
+      }
+    });
+  }
+
   function calculate() {
     const price = getPrice();
     const months = Number(monthsSelect.value);
     const percent = firstPayment ? withFirstPayment[months] : withoutFirstPayment[months];
     let total = price * (1 + percent / 100);
-    // Первый взнос считается от стоимости товара, а не от итоговой
-    // стоимости в рассрочку (в которую уже включена наценка).
-    let down = firstPayment ? price * 0.25 : 0;
+
+    // Первый взнос считается от стоимости товара (а не от итоговой суммы
+    // с наценкой). Минимум — 25%, но клиент может внести и больше: тогда
+    // берём то, что он ввёл, а если ввёл меньше минимума — используем
+    // минимум для расчёта и подсвечиваем ошибку в поле.
+    const minDown = price * 0.25;
+    let down = 0;
+
+    if (firstPayment) {
+      // Пока клиент не трогал поле — держим его синхронным с 25% от
+      // текущей цены (она могла измениться, пока переключатель уже активен).
+      if (!downTouched && downPaymentInput) {
+        downPaymentInput.value = minDown ? Math.ceil(minDown).toLocaleString('ru-RU') : '';
+      }
+
+      const enteredDown = downTouched ? getDownInputValue() : minDown;
+      down = Math.max(enteredDown, minDown);
+
+      const isTooLow = downTouched && enteredDown < minDown - 0.5;
+      if (downPaymentInput) downPaymentInput.classList.toggle('field-invalid', isTooLow);
+      if (downPaymentError) downPaymentError.hidden = !isTooLow;
+    } else if (downPaymentError) {
+      downPaymentError.hidden = true;
+    }
+
     let rest = total - down;
 
     // Округляем ежемесячный платеж вверх до 10 рублей

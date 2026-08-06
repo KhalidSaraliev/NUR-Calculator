@@ -108,6 +108,29 @@
 
                     </div>
 
+                    <div class="input-group" id="downPaymentGroup" hidden>
+
+                        <label for="downPaymentInput">
+                            Сумма первого взноса
+                        </label>
+
+                        <input
+                            type="text"
+                            id="downPaymentInput"
+                            inputmode="numeric"
+                            autocomplete="off"
+                            maxlength="12"
+                            aria-describedby="downPaymentError"
+                            placeholder="Например: 25 000">
+
+                        <span class="field-hint">Минимум 25% от стоимости товара — можно внести больше</span>
+
+                        <span id="downPaymentError" class="field-error" role="alert" hidden>
+                            Первый взнос не может быть меньше 25% от стоимости товара
+                        </span>
+
+                    </div>
+
                     <div class="result" aria-live="polite">
                         <div class="payment-card">
                             <div class="payment-title">
