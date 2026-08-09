@@ -466,7 +466,8 @@
         `💰 Стоимость товара: ${priceInput.value} ₽\n` +
         `📆 Срок: ${months} мес.\n` +
         `💳 Первый взнос: ${document.getElementById('down').textContent}\n` +
-        `✅ Ежемесячный платеж: ${document.getElementById('paymentBig').textContent}\n\n` +
+        `✅ Ежемесячный платеж: ${document.getElementById('paymentBig').textContent}\n` +
+        `💵 Стоимость в рассрочку: ${document.getElementById('total').textContent}\n\n` +
         `Хочу оформить рассрочку.`;
 
       const win = window.open(
@@ -480,3 +481,4 @@
     });
   }
 })();
+
