@@ -1,0 +1,11 @@
+node_modules/
+.next/
+out/
+coverage/
+next-env.d.ts
+*.tsbuildinfo
+# Локальное хранилище данных для разработки (заявки, пользователи, платежи)
+.data/
+# Секреты
+.env
+.env*.local
